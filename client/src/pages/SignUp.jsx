@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { FormControl, FormErrorMessage } from '@chakra-ui/form-control';
 import { Input, Button, Text, Box, Flex, Heading, Stack } from '@chakra-ui/react';
+import { API_BASE_URL } from '../util';
+import toast from 'react-hot-toast';
 
 export default function SignUp() {
     // Menggunakan react-hook-form untuk form handling
@@ -13,7 +15,23 @@ export default function SignUp() {
 
     // Fungsi untuk menangani submit form
     const doSubmit = async (values) => {
-        alert('Sign Up Successful. You are now logged in');
+        try{
+            const res = await fetch(`${API_BASE_URL}/auth/signup`,{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body:JSON.stringify(values),
+            });
+            const data = await res.json();
+            if(res.status === 200){
+                toast.success('Sign up seccesful. you are now logged in');
+            }else{
+                toast.error(data.message);
+            } 
+            }catch (error){
+                toast.error('something went wrong');
+        }
     };
 
     return (
